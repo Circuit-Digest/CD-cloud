@@ -1,0 +1,136 @@
+openapi: 3.0.0
+info:
+  title: QR Code and ANPR API
+  version: 1.0.0
+  description: API for QR Code and Automatic Number Plate Recognition (ANPR)
+
+servers:
+  - url: https://www.circuitdigest.cloud/api
+
+paths:
+  /readqrcode:
+    post:
+      summary: Read QR Code from an image
+      description: Reads a QR code from an uploaded image and returns the decoded data.
+      tags:
+        - QR Code
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                imageFile:
+                  type: string
+                  format: binary
+                  description: The image file containing a QR code.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: API Key for authentication.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      image_height:
+                        type: integer
+                        example: 1080
+                      image_width:
+                        type: integer
+                        example: 1920
+                      view_image:
+                        type: string
+                        example: https://www.circuitdigest.cloud/static/sample.jpg
+                      QR_code:
+                        type: string
+                        example: "Decoded QR code data"
+                      message:
+                        type: string
+                        example: Image received successfully
+        '400':
+          description: Error in request or missing image file
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No image file provided
+  /readnumberplate:
+    post:
+      summary: Read Number Plate from an image
+      description: Automatically reads the number plate from an uploaded image using ANPR.
+      tags:
+        - ANPR
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                imageFile:
+                  type: string
+                  format: binary
+                  description: The image file containing a number plate.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: API Key for authentication.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      plate_Xcenter:
+                        type: number
+                        example: 200.5
+                      plate_Ycenter:
+                        type: number
+                        example: 300.5
+                      view_image:
+                        type: string
+                        example: https://www.circuitdigest.cloud/static/sample-car.jpg
+                      number_plate:
+                        type: string
+                        example: "MH12AB1234"
+                      message:
+                        type: string
+                        example: ANPR successfull
+        '400':
+          description: Error in request or missing image file
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No image file provided
